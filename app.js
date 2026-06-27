@@ -1,496 +1,551 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+// ===================================================
+// 競合分析DB - app.js v2
+// スクレイピング + グラフ + AIスコア手動調整
+// ===================================================
  
-:root {
-  --bg: #0e0e10;
-  --bg2: #16161a;
-  --bg3: #1e1e24;
-  --bg4: #26262e;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.14);
-  --text: #f0f0f4;
-  --text2: #9898a8;
-  --text3: #60606e;
-  --accent: #7c6af7;
-  --accent-light: rgba(124,106,247,0.15);
-  --accent-border: rgba(124,106,247,0.35);
-  --green: #34d399;
-  --green-bg: rgba(52,211,153,0.1);
-  --amber: #fbbf24;
-  --amber-bg: rgba(251,191,36,0.1);
-  --red: #f87171;
-  --red-bg: rgba(248,113,113,0.1);
-  --teal: #22d3ee;
-  --teal-bg: rgba(34,211,238,0.1);
-  --radius: 10px;
-  --radius-sm: 6px;
-}
+const STORE_KEY = 'rival_db_stores_v2';
+const MY_KEY    = 'rival_db_mystore_v2';
+const APIKEY_KEY = 'rival_db_apikey';
  
-html { font-size: 15px; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans JP', 'Inter', sans-serif;
-  line-height: 1.6;
-  min-height: 100vh;
+function loadStores() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || getDefaultStores(); }
+  catch { return getDefaultStores(); }
 }
+function saveStores(list) { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+function loadMyStore() {
+  try { return JSON.parse(localStorage.getItem(MY_KEY)) || getDefaultMyStore(); }
+  catch { return getDefaultMyStore(); }
+}
+function saveMySt(obj) { localStorage.setItem(MY_KEY, JSON.stringify(obj)); }
+function loadApiKey() { return localStorage.getItem(APIKEY_KEY) || ''; }
+function saveApiKey(k) { localStorage.setItem(APIKEY_KEY, k); }
  
-/* ===== NAVBAR ===== */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(14,14,16,0.88);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+// ---------- デフォルトデータ ----------
+function getDefaultStores() {
+  return [{
+    id: 's001',
+    name: '神戸デリヘル クリスタル',
+    type: 'deli',
+    tel: '078-777-6435',
+    url: 'https://www.cityheaven.net/hyogo/A2802/A280201/kobe_crystal/',
+    castCount: 116,
+    price60: 19800, price60new: 17600, price90: 21100, price120: 32100,
+    shimei: 2200, specialShimei: 1100, entryFee: 1100, totalReviews: 520,
+    scores: { hp: 82, profile: 76, reviews: 85, price: 68, cast: 90 },
+    aiTags: [
+      { text: '在籍116名・規模最大', type: 'good' },
+      { text: '口コミ実績豊富', type: 'good' },
+      { text: 'ポイントカード導入済', type: 'good' },
+      { text: '価格やや高め', type: 'warn' },
+      { text: 'HP情報密度が過多', type: 'warn' },
+    ],
+    aiSummary: '三宮エリア最大規模の在籍数を誇る老舗デリヘル。口コミ・ランキング機能が充実しており集客基盤は強固。一方で60分19,800円（クーポン後17,600円）と価格帯はやや高く、新規顧客の初回ハードルになり得る。HP情報量が多く一見でわかりにくい面もある。',
+  }];
 }
-.nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-brand { display: flex; align-items: center; gap: 10px; }
-.brand-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-}
-.brand-text { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
-.brand-text em { font-style: normal; color: var(--accent); }
-.brand-area {
-  font-size: 11px;
-  color: var(--text3);
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-.nav-actions { display: flex; gap: 8px; align-items: center; }
- 
-/* ===== BUTTONS ===== */
-.btn-ghost {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
-  transition: all 0.15s;
-  font-family: inherit;
-}
-.btn-ghost:hover { border-color: var(--accent-border); color: var(--text); background: var(--accent-light); }
- 
-.btn-primary {
-  background: var(--accent);
-  border: none;
-  color: #fff;
-  padding: 9px 20px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 7px;
-  transition: all 0.15s;
-  font-family: inherit;
-  width: 100%;
-  justify-content: center;
-  margin-top: 4px;
-}
-.btn-primary:hover { background: #6b5cf0; }
-.btn-primary:active { transform: scale(0.98); }
- 
-/* ===== PAGE ===== */
-.page-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
- 
-/* ===== HEADER ===== */
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 40px;
-  margin-bottom: 36px;
-  flex-wrap: wrap;
-}
-.page-header h1 {
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-}
-.page-header h1 span { color: var(--accent); }
-.header-sub { font-size: 13px; color: var(--text2); margin-top: 8px; max-width: 380px; }
-.kpi-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
-.kpi-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 20px;
-  min-width: 120px;
-}
-.kpi-num { font-size: 22px; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: -0.03em; }
-.kpi-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
- 
-/* ===== TOOLBAR ===== */
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.filter-group { display: flex; gap: 6px; }
-.filter-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text2);
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: inherit;
-}
-.filter-btn:hover { border-color: var(--border2); color: var(--text); }
-.filter-btn.active { border-color: var(--accent-border); color: var(--accent); background: var(--accent-light); }
-.sort-group { display: flex; align-items: center; gap: 8px; }
-.sort-label { font-size: 12px; color: var(--text3); }
-.sort-group select {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 5px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  cursor: pointer;
-  font-family: inherit;
+function getDefaultMyStore() {
+  return { name: '（自店 新規オープン予定）', type: 'hybrid', price60: null, price60new: null, shimei: null, specialShimei: null };
 }
  
-/* ===== STORE GRID ===== */
-.store-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 16px;
-  margin-bottom: 48px;
+// ---------- 状態 ----------
+let stores = loadStores();
+let myStore = loadMyStore();
+let currentFilter = 'all';
+ 
+// ---------- ユーティリティ ----------
+function calcTotal(scores) {
+  if (!scores) return null;
+  const vals = Object.values(scores);
+  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+}
+function scoreClass(n) {
+  if (n===null) return 'score-none';
+  if (n>=75) return 'score-high';
+  if (n>=55) return 'score-mid';
+  return 'score-low';
+}
+function barColor(key) {
+  return { hp:'#7c6af7', profile:'#34d399', reviews:'#f59e0b', price:'#22d3ee', cast:'#f472b6' }[key]||'#7c6af7';
+}
+function formatYen(n) {
+  if (n===null||n===undefined) return '—';
+  return n.toLocaleString('ja-JP')+'円';
+}
+function uid() { return 's'+Date.now()+Math.random().toString(36).slice(2,6); }
+ 
+// ---------- KPI ----------
+function renderKPI() {
+  const real = stores.filter(s=>s.scores);
+  const prices = stores.filter(s=>s.price60new).map(s=>s.price60new);
+  const minPrice = prices.length ? Math.min(...prices) : null;
+  const avgScore = real.length ? Math.round(real.reduce((a,s)=>a+calcTotal(s.scores),0)/real.length) : '—';
+  const shimeiVals = stores.filter(s=>s.shimei).map(s=>s.shimei).sort((a,b)=>a-b);
+  const medShimei = shimeiVals.length ? shimeiVals[Math.floor(shimeiVals.length/2)] : null;
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi-card"><div class="kpi-num">${stores.length}</div><div class="kpi-label">登録店舗</div></div>
+    <div class="kpi-card"><div class="kpi-num">${minPrice?minPrice.toLocaleString():'—'}</div><div class="kpi-label">最安値 60分（円）</div></div>
+    <div class="kpi-card"><div class="kpi-num">${medShimei?medShimei.toLocaleString():'—'}</div><div class="kpi-label">指名料 中央値</div></div>
+    <div class="kpi-card"><div class="kpi-num">${avgScore}</div><div class="kpi-label">平均 AIスコア</div></div>
+  `;
 }
  
-.store-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  cursor: pointer;
-  transition: border-color 0.2s, transform 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-.store-card:hover { border-color: var(--accent-border); transform: translateY(-2px); }
-.store-card.is-mystore { border-color: var(--accent-border); }
-.store-card.is-mystore::before {
-  content: '自店';
-  position: absolute;
-  top: 12px; right: 12px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
+// ---------- 店舗カード ----------
+function renderStores() {
+  const sortVal = document.getElementById('sort-select').value;
+  let list = [...stores];
+  if (currentFilter!=='all') list = list.filter(s=>s.type===currentFilter);
+  list.sort((a,b)=>{
+    if (sortVal==='score') return (calcTotal(b.scores)??-1)-(calcTotal(a.scores)??-1);
+    if (sortVal==='price_asc') return (a.price60new??99999)-(b.price60new??99999);
+    if (sortVal==='price_desc') return (b.price60new??0)-(a.price60new??0);
+    if (sortVal==='cast') return (b.castCount??0)-(a.castCount??0);
+    if (sortVal==='reviews') return (b.totalReviews??0)-(a.totalReviews??0);
+    return 0;
+  });
+  const grid = document.getElementById('store-grid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-card"><div>該当する店舗がありません</div></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(s=>renderCard(s)).join('');
 }
  
-.card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
-.card-name { font-size: 15px; font-weight: 700; line-height: 1.3; }
-.card-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-.type-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
-  letter-spacing: 0.02em;
-}
-.type-deli  { background: rgba(99,153,212,0.15); color: #63a0d4; }
-.type-hotel { background: rgba(52,211,153,0.12); color: #34d399; }
-.type-hybrid{ background: rgba(124,106,247,0.15); color: #a89af5; }
- 
-.card-tel { font-size: 11px; color: var(--text3); }
- 
-.score-circle {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  border: 2px solid;
-  flex-shrink: 0;
-}
-.score-num { font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif; line-height: 1; }
-.score-label { font-size: 9px; margin-top: 1px; opacity: 0.7; }
- 
-.score-high  { border-color: var(--green); color: var(--green); }
-.score-mid   { border-color: var(--amber); color: var(--amber); }
-.score-low   { border-color: var(--red);   color: var(--red);   }
-.score-none  { border-color: var(--border2); color: var(--text3); }
- 
-/* 価格メトリクス */
-.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.metric {
-  background: var(--bg3);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-}
-.metric-label { font-size: 10px; color: var(--text3); }
-.metric-val { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 2px; font-family: 'Inter', sans-serif; }
-.metric-sub { font-size: 10px; color: var(--text3); }
- 
-/* スコアバー */
-.score-bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.bar-row { display: flex; align-items: center; gap: 8px; }
-.bar-name { font-size: 10px; color: var(--text2); min-width: 68px; }
-.bar-bg { flex: 1; height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
-.bar-num { font-size: 10px; color: var(--text3); min-width: 24px; text-align: right; font-family: 'Inter', sans-serif; }
- 
-/* AIタグ */
-.ai-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-.ai-tag {
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid;
-}
-.tag-good   { background: var(--green-bg); color: var(--green); border-color: rgba(52,211,153,0.25); }
-.tag-warn   { background: var(--amber-bg); color: var(--amber); border-color: rgba(251,191,36,0.25); }
-.tag-bad    { background: var(--red-bg);   color: var(--red);   border-color: rgba(248,113,113,0.25); }
-.tag-info   { background: var(--teal-bg);  color: var(--teal);  border-color: rgba(34,211,238,0.25); }
- 
-/* ===== COMPARE TABLE ===== */
-.compare-section { margin-top: 8px; }
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 10px;
-}
-.section-title span { font-size: 12px; color: var(--text3); font-weight: 400; }
-.table-wrap { overflow-x: auto; }
-.compare-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.compare-table th {
-  background: var(--bg3);
-  color: var(--text2);
-  font-weight: 500;
-  font-size: 11px;
-  padding: 10px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-.compare-table td {
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: middle;
-}
-.compare-table tr:last-child td { border-bottom: none; }
-.compare-table tr:hover td { background: var(--bg2); }
-.compare-table tr.mystore-row td { background: rgba(124,106,247,0.06); }
-.compare-table tr.mystore-row td:first-child { border-left: 2px solid var(--accent); }
-.num-cell { font-family: 'Inter', sans-serif; font-weight: 500; }
-.cheaper { color: var(--green); }
-.pricier { color: var(--red); }
-.same    { color: var(--text2); }
- 
-/* ===== MODAL ===== */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(4px);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 28px;
-  width: 100%;
-  max-width: 480px;
-  max-height: 88vh;
-  overflow-y: auto;
-}
-.modal-wide { max-width: 660px; }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px;
-}
-.modal-header h3 { font-size: 16px; font-weight: 600; }
-.modal-close {
-  background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
-  width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; font-size: 12px;
-}
-.modal-close:hover { color: var(--text); }
- 
-.modal-tabs { display: flex; gap: 4px; background: var(--bg3); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 20px; }
-.mtab {
-  flex: 1; padding: 6px; border-radius: 5px; font-size: 12px; font-weight: 500;
-  border: none; background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: inherit;
-}
-.mtab.active { background: var(--bg4); color: var(--text); }
-.mtab-content { display: none; }
-.mtab-content.active { display: block; }
- 
-.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.form-group label { font-size: 12px; color: var(--text2); }
-.form-group input, .form-group select, .form-group textarea {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: inherit;
-  transition: border-color 0.15s;
-}
-.form-group input:focus, .form-group select:focus {
-  outline: none;
-  border-color: var(--accent-border);
-}
-.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.form-section-label { font-size: 11px; color: var(--text3); margin: 4px 0 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
- 
-.ai-note {
-  background: rgba(124,106,247,0.08);
-  border: 1px solid var(--accent-border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: 12px;
-  color: #a89af5;
-  display: flex; align-items: flex-start; gap: 8px;
-  margin-bottom: 14px;
-  line-height: 1.5;
-}
-.analyze-status { font-size: 12px; color: var(--text2); margin-top: 10px; min-height: 20px; }
-.analyze-status.ok { color: var(--green); }
-.analyze-status.err { color: var(--red); }
- 
-/* ===== DETAIL MODAL ===== */
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-.detail-metric {
-  background: var(--bg3);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-}
-.detail-metric .dm-label { font-size: 11px; color: var(--text3); }
-.detail-metric .dm-val { font-size: 18px; font-weight: 600; font-family: 'Inter', sans-serif; margin-top: 3px; }
-.detail-metric .dm-sub { font-size: 11px; color: var(--text3); }
-.detail-score-bars { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.detail-bar-row { display: flex; align-items: center; gap: 10px; }
-.detail-bar-name { font-size: 12px; color: var(--text2); min-width: 96px; }
-.detail-bar-bg { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
-.detail-bar-fill { height: 100%; border-radius: 3px; }
-.detail-bar-num { font-size: 12px; color: var(--text2); min-width: 30px; text-align: right; font-family: 'Inter', sans-serif; }
-.detail-ai-summary {
-  background: var(--bg3);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  font-size: 13px;
-  color: var(--text2);
-  line-height: 1.7;
-  margin-bottom: 14px;
-  border-left: 3px solid var(--accent);
-}
-.detail-tags { display: flex; gap: 6px; flex-wrap: wrap; }
- 
-/* ===== EMPTY STATE ===== */
-.empty-card {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text3);
-  font-size: 14px;
-}
-.empty-card svg { margin-bottom: 12px; opacity: 0.4; }
- 
-/* ===== DELETE BTN ===== */
-.btn-danger {
-  background: transparent;
-  border: 1px solid rgba(248,113,113,0.3);
-  color: var(--red);
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s;
-}
-.btn-danger:hover { background: var(--red-bg); }
- 
-/* ===== TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: 24px; right: 24px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 12px 18px;
-  font-size: 13px;
-  color: var(--text);
-  z-index: 999;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.toast-ok { border-color: rgba(52,211,153,0.35); color: var(--green); }
-.toast.toast-err { border-color: rgba(248,113,113,0.35); color: var(--red); }
- 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 640px) {
-  .page-header { flex-direction: column; }
-  .kpi-row { width: 100%; }
-  .kpi-card { flex: 1; min-width: 90px; }
-  .store-grid { grid-template-columns: 1fr; }
-  .toolbar { flex-direction: column; align-items: flex-start; }
-  .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+function renderCard(s) {
+  const total = calcTotal(s.scores);
+  const sc = scoreClass(total);
+  const typeLabels = { deli:'デリヘル', hotel:'ホテヘル', hybrid:'ハイブリッド' };
+  const backEst = s.price60new ? Math.round(s.price60new*0.6) : null;
+  const barsHtml = s.scores ? `
+    <div class="score-bars">
+      ${Object.entries({hp:'HP作り込み',profile:'プロフ品質',reviews:'口コミ数',price:'価格競争力',cast:'在籍・多様性'}).map(([k,label])=>`
+        <div class="bar-row">
+          <span class="bar-name">${label}</span>
+          <div class="bar-bg"><div class="bar-fill" style="width:${s.scores[k]}%;background:${barColor(k)}"></div></div>
+          <span class="bar-num">${s.scores[k]}</span>
+        </div>`).join('')}
+    </div>` : `<div style="font-size:12px;color:var(--text3);padding:12px 0;text-align:center">未解析 — クリックして解析実行</div>`;
+  const tagsHtml = s.aiTags&&s.aiTags.length ? `<div class="ai-tags">${s.aiTags.map(t=>`<span class="ai-tag tag-${t.type}">${t.text}</span>`).join('')}</div>` : '';
+  return `
+    <div class="store-card" onclick="openDetail('${s.id}')">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${s.name}</div>
+          <div class="card-meta">
+            <span class="type-badge type-${s.type}">${typeLabels[s.type]}</span>
+            ${s.tel&&s.tel!=='—'?`<span class="card-tel">${s.tel}</span>`:''}
+            ${s.castCount?`<span class="card-tel">在籍 ${s.castCount}名</span>`:''}
+          </div>
+        </div>
+        <div class="score-circle ${sc}">
+          <div class="score-num">${total??'—'}</div>
+          <div class="score-label">総合</div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">新規最安値</div><div class="metric-val">${formatYen(s.price60new)}</div><div class="metric-sub">60分</div></div>
+        <div class="metric"><div class="metric-label">指名料</div><div class="metric-val">${formatYen(s.shimei)}</div><div class="metric-sub">特別 +${formatYen(s.specialShimei)}</div></div>
+        <div class="metric"><div class="metric-label">女子バック目安</div><div class="metric-val">${formatYen(backEst)}</div><div class="metric-sub">60分×60%試算</div></div>
+      </div>
+      ${barsHtml}
+      ${tagsHtml}
+    </div>`;
 }
  
-/* ===== CHART ===== */
-.chart-section { margin-bottom: 48px; }
-.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.chart-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
+// ---------- 比較テーブル ----------
+function renderCompareTable() {
+  const my = myStore;
+  const rows = [
+    { isMy:true, cells:[`<strong>${my.name}</strong>`,'—',formatYen(my.price60),formatYen(my.price60new),formatYen(my.shimei),formatYen(my.specialShimei),'—','—','—'] },
+    ...stores.map(s=>{
+      const backEst = s.price60new?Math.round(s.price60new*0.6):null;
+      let cls='';
+      if (my.price60new&&s.price60new) cls = s.price60new<my.price60new?'pricier':s.price60new>my.price60new?'cheaper':'same';
+      return { isMy:false, cells:[
+        s.name,
+        {deli:'デリヘル',hotel:'ホテヘル',hybrid:'ハイブリッド'}[s.type],
+        `<span class="num-cell">${formatYen(s.price60)}</span>`,
+        `<span class="num-cell ${cls}">${formatYen(s.price60new)}</span>`,
+        `<span class="num-cell">${formatYen(s.shimei)}</span>`,
+        `<span class="num-cell">${formatYen(s.specialShimei)}</span>`,
+        `<span class="num-cell">${formatYen(s.entryFee)}</span>`,
+        `<span class="num-cell">${formatYen(backEst)}</span>`,
+        `<span class="num-cell">${s.totalReviews??'—'}</span>`,
+      ]};
+    })
+  ];
+  document.getElementById('compare-table').innerHTML = `
+    <thead><tr>${['店舗名','業態','60分通常','新規最安値','指名料','特別指名','入会金','女子バック目安','口コミ総数'].map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr class="${r.isMy?'mystore-row':''}">${r.cells.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
 }
-.chart-label { font-size: 12px; color: var(--text3); margin-bottom: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
  
-/* スコア手動入力 */
-.score-input {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  border-radius: 4px;
-  font-family: 'Inter', sans-serif;
+// ---------- チャート描画 ----------
+let chartInstance = null;
+function renderChart() {
+  const canvas = document.getElementById('chart-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+ 
+  const scored = stores.filter(s=>s.scores);
+  if (!scored.length) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#60606e';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('スコアデータがありません', canvas.width/2, canvas.height/2);
+    return;
+  }
+ 
+  const labels = ['HP作り込み','プロフ品質','口コミ数','価格競争力','在籍・多様性'];
+  const colors = ['#7c6af7','#34d399','#f59e0b','#22d3ee','#f472b6'];
+ 
+  chartInstance = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: scored.map((s,i)=>({
+        label: s.name,
+        data: [s.scores.hp, s.scores.profile, s.scores.reviews, s.scores.price, s.scores.cast],
+        borderColor: colors[i % colors.length],
+        backgroundColor: colors[i % colors.length]+'22',
+        pointBackgroundColor: colors[i % colors.length],
+        borderWidth: 2,
+        pointRadius: 4,
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { stepSize: 25, color: '#60606e', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.07)' },
+          angleLines: { color: 'rgba(255,255,255,0.07)' },
+          pointLabels: { color: '#9898a8', font: { size: 11 } },
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#9898a8', font: { size: 12 }, boxWidth: 12 } }
+      }
+    }
+  });
+ 
+  // 価格棒グラフ
+  const barCanvas = document.getElementById('bar-canvas');
+  if (!barCanvas) return;
+  const barCtx = barCanvas.getContext('2d');
+  const priced = stores.filter(s=>s.price60new);
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: priced.map(s=>s.name.length>8?s.name.slice(0,8)+'…':s.name),
+      datasets: [
+        { label:'新規最安値', data: priced.map(s=>s.price60new), backgroundColor:'#7c6af7aa', borderRadius:4 },
+        { label:'通常価格',   data: priced.map(s=>s.price60||0),  backgroundColor:'#3b3b4f', borderRadius:4 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color:'#9898a8', font:{size:11} }, grid: { color:'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color:'#9898a8', font:{size:11}, callback: v=>v.toLocaleString()+'円' }, grid: { color:'rgba(255,255,255,0.07)' } }
+      },
+      plugins: { legend: { labels: { color:'#9898a8', font:{size:12}, boxWidth:12 } } }
+    }
+  });
 }
-.score-input:focus { outline: none; border-color: var(--accent-border); }
  
-@media (max-width: 640px) {
-  .chart-grid { grid-template-columns: 1fr; }
+// ---------- URL解析（Anthropic API） ----------
+async function analyzeURL() {
+  const url = document.getElementById('input-url').value.trim();
+  const apiKey = document.getElementById('input-apikey').value.trim() || loadApiKey();
+  const status = document.getElementById('analyze-status');
+ 
+  if (!url) { status.textContent='URLを入力してください'; status.className='analyze-status err'; return; }
+  if (!apiKey) { status.textContent='APIキーを入力してください'; status.className='analyze-status err'; return; }
+ 
+  saveApiKey(apiKey);
+  status.className='analyze-status';
+  status.textContent='AIが解析中... (10〜20秒かかります)';
+ 
+  const prompt = `以下の風俗店ページのURLを見て、店舗情報を抽出してください。
+URLにアクセスできない場合はURLから読み取れる情報だけで回答してください。
+ 
+URL: ${url}
+ 
+以下のJSON形式のみで回答してください（説明文不要）:
+{
+  "name": "店舗名",
+  "type": "deli または hotel または hybrid",
+  "tel": "電話番号",
+  "castCount": 在籍人数(数値またはnull),
+  "price60": 60分通常価格(数値またはnull),
+  "price60new": 60分新規最安値(数値またはnull),
+  "price90": 90分価格(数値またはnull),
+  "price120": 120分価格(数値またはnull),
+  "shimei": 指名料(数値またはnull),
+  "specialShimei": 特別指名料(数値またはnull),
+  "entryFee": 入会金(数値またはnull),
+  "totalReviews": 口コミ総数(数値またはnull),
+  "scores": {
+    "hp": HPの作り込み・情報設計スコア(0-100),
+    "profile": プロフ画像クオリティスコア(0-100),
+    "reviews": 口コミ数・信頼度スコア(0-100),
+    "price": 価格競争力スコア(0-100),
+    "cast": 在籍数・多様性スコア(0-100)
+  },
+  "aiTags": [{"text":"タグ名","type":"good または warn または bad"}],
+  "aiSummary": "200文字以内のAI総評"
+}`;
+ 
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role:'user', content: prompt }]
+      })
+    });
+ 
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || res.statusText);
+    }
+ 
+    const data = await res.json();
+    const text = data.content[0].text.trim();
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('JSONの解析に失敗しました');
+ 
+    const parsed = JSON.parse(jsonMatch[0]);
+    const newStore = {
+      id: uid(),
+      url,
+      name: parsed.name || '（店舗名不明）',
+      type: parsed.type || 'deli',
+      tel: parsed.tel || '—',
+      castCount: parsed.castCount || null,
+      price60: parsed.price60 || null,
+      price60new: parsed.price60new || null,
+      price90: parsed.price90 || null,
+      price120: parsed.price120 || null,
+      shimei: parsed.shimei || null,
+      specialShimei: parsed.specialShimei || null,
+      entryFee: parsed.entryFee || null,
+      totalReviews: parsed.totalReviews || null,
+      scores: parsed.scores || null,
+      aiTags: parsed.aiTags || [],
+      aiSummary: parsed.aiSummary || '',
+    };
+ 
+    stores.push(newStore);
+    saveStores(stores);
+    closeModal('add');
+    renderAll();
+    showToast(`「${newStore.name}」を登録しました`, 'ok');
+ 
+  } catch(e) {
+    status.textContent = 'エラー: ' + e.message;
+    status.className = 'analyze-status err';
+  }
 }
  
+// ---------- 詳細モーダル ----------
+function openDetail(id) {
+  const s = stores.find(x=>x.id===id);
+  if (!s) return;
+  const total = calcTotal(s.scores);
+  const backEst = s.price60new ? Math.round(s.price60new*0.6) : null;
+  const typeLabels = { deli:'デリヘル', hotel:'ホテヘル', hybrid:'ハイブリッド' };
+ 
+  const barsHtml = s.scores ? `
+    <h4 style="font-size:13px;color:var(--text2);margin-bottom:10px">AIスコア詳細（クリックで編集）</h4>
+    <div class="detail-score-bars" id="score-bars-${s.id}">
+      ${Object.entries({hp:'HP作り込み・情報設計',profile:'プロフ画像クオリティ',reviews:'口コミ数・信頼度',price:'価格競争力',cast:'在籍数・多様性'}).map(([k,label])=>`
+        <div class="detail-bar-row">
+          <span class="detail-bar-name">${label}</span>
+          <div class="detail-bar-bg"><div class="detail-bar-fill" style="width:${s.scores[k]}%;background:${barColor(k)}"></div></div>
+          <input type="number" class="score-input" min="0" max="100" value="${s.scores[k]}"
+            onchange="updateScore('${s.id}','${k}',this.value)"
+            style="width:52px;padding:2px 6px;font-size:12px;text-align:right" />
+        </div>`).join('')}
+    </div>` : `<button class="btn-primary" onclick="runAIScore('${s.id}')">AIスコアを今すぐ生成</button>`;
+ 
+  document.getElementById('detail-title').textContent = s.name;
+  document.getElementById('detail-body').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <span class="type-badge type-${s.type}">${typeLabels[s.type]}</span>
+      ${s.tel&&s.tel!=='—'?`<span style="font-size:12px;color:var(--text3)">${s.tel}</span>`:''}
+      ${s.url?`<a href="${s.url}" target="_blank" style="font-size:12px;color:var(--accent)">公式ページ →</a>`:''}
+    </div>
+    <div class="detail-grid">
+      <div class="detail-metric"><div class="dm-label">AI総合スコア</div><div class="dm-val" style="color:${total>=75?'var(--green)':total>=55?'var(--amber)':'var(--red)'}">${total??'未解析'}</div></div>
+      <div class="detail-metric"><div class="dm-label">在籍人数</div><div class="dm-val">${s.castCount??'—'}<span style="font-size:13px;font-weight:400"> 名</span></div></div>
+      <div class="detail-metric"><div class="dm-label">60分 新規最安値</div><div class="dm-val">${formatYen(s.price60new)}</div><div class="dm-sub">通常 ${formatYen(s.price60)}</div></div>
+      <div class="detail-metric"><div class="dm-label">90分 / 120分</div><div class="dm-val" style="font-size:14px">${formatYen(s.price90)} / ${formatYen(s.price120)}</div></div>
+      <div class="detail-metric"><div class="dm-label">指名料</div><div class="dm-val">${formatYen(s.shimei)}</div><div class="dm-sub">特別指名 ${formatYen(s.specialShimei)}</div></div>
+      <div class="detail-metric"><div class="dm-label">女子バック目安</div><div class="dm-val" style="color:var(--green)">${formatYen(backEst)}</div><div class="dm-sub">60分新規×60%</div></div>
+    </div>
+    ${barsHtml}
+    ${s.aiSummary?`<h4 style="font-size:13px;color:var(--text2);margin:14px 0 8px">AI総評</h4><div class="detail-ai-summary">${s.aiSummary}</div>`:''}
+    ${s.aiTags&&s.aiTags.length?`<div class="detail-tags" style="margin-top:10px">${s.aiTags.map(t=>`<span class="ai-tag tag-${t.type}">${t.text}</span>`).join('')}</div>`:''}
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn-danger" onclick="deleteStore('${s.id}');closeModal('detail')">削除</button>
+      <button class="btn-ghost" onclick="closeModal('detail')">閉じる</button>
+    </div>`;
+  openModal('detail');
+}
+ 
+// ---------- スコア手動更新 ----------
+function updateScore(id, key, val) {
+  const s = stores.find(x=>x.id===id);
+  if (!s||!s.scores) return;
+  s.scores[key] = Math.min(100, Math.max(0, parseInt(val)||0));
+  saveStores(stores);
+  renderStores();
+  showToast('スコアを更新しました', 'ok');
+}
+ 
+// ---------- AIスコア生成（未解析店舗用） ----------
+async function runAIScore(id) {
+  const s = stores.find(x=>x.id===id);
+  const apiKey = loadApiKey();
+  if (!apiKey) { showToast('APIキーを設定してください', 'err'); return; }
+  showToast('AIスコアを生成中...', 'ok');
+ 
+  const prompt = `以下の店舗情報を元にスコアを生成してください。
+店舗名: ${s.name}
+業態: ${s.type}
+在籍数: ${s.castCount||'不明'}
+価格60分: ${s.price60||'不明'}
+口コミ数: ${s.totalReviews||'不明'}
+ 
+JSONのみで回答:
+{"hp":数値,"profile":数値,"reviews":数値,"price":数値,"cast":数値,"aiTags":[{"text":"タグ","type":"good/warn/bad"}],"aiSummary":"総評"}`;
+ 
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const parsed = JSON.parse(data.content[0].text.match(/\{[\s\S]*\}/)[0]);
+    s.scores = { hp:parsed.hp, profile:parsed.profile, reviews:parsed.reviews, price:parsed.price, cast:parsed.cast };
+    s.aiTags = parsed.aiTags||[];
+    s.aiSummary = parsed.aiSummary||'';
+    saveStores(stores);
+    closeModal('detail');
+    renderAll();
+    openDetail(id);
+    showToast('AIスコアを生成しました', 'ok');
+  } catch(e) { showToast('エラー: '+e.message, 'err'); }
+}
+ 
+// ---------- 手動追加 ----------
+function addManual() {
+  const name = document.getElementById('m-name').value.trim();
+  if (!name) { showToast('店舗名を入力してください','err'); return; }
+  stores.push({
+    id: uid(), name,
+    type: document.getElementById('m-type').value,
+    tel: document.getElementById('m-tel').value||'—',
+    url: document.getElementById('m-url').value,
+    castCount: parseInt(document.getElementById('m-cast').value)||null,
+    price60: parseInt(document.getElementById('m-p60').value)||null,
+    price60new: parseInt(document.getElementById('m-p60new').value)||null,
+    price90:null, price120:null,
+    shimei: parseInt(document.getElementById('m-shimei').value)||null,
+    specialShimei: parseInt(document.getElementById('m-special').value)||null,
+    entryFee: parseInt(document.getElementById('m-entry').value)||null,
+    totalReviews: parseInt(document.getElementById('m-reviews').value)||null,
+    scores:null, aiTags:[], aiSummary:'',
+  });
+  saveStores(stores);
+  closeModal('add');
+  renderAll();
+  showToast(`「${name}」を登録しました`,'ok');
+}
+ 
+// ---------- 削除 ----------
+function deleteStore(id) {
+  stores = stores.filter(s=>s.id!==id);
+  saveStores(stores);
+  renderAll();
+  showToast('店舗を削除しました','ok');
+}
+ 
+// ---------- 自店保存 ----------
+function saveMyStore() {
+  myStore = {
+    name: document.getElementById('my-name').value||'（新規オープン予定）',
+    type:'hybrid',
+    price60: parseInt(document.getElementById('my-p60').value)||null,
+    price60new: parseInt(document.getElementById('my-p60new').value)||null,
+    shimei: parseInt(document.getElementById('my-shimei').value)||null,
+    specialShimei: parseInt(document.getElementById('my-special').value)||null,
+  };
+  saveMySt(myStore);
+  closeModal('mystore');
+  renderAll();
+  showToast('自店設定を保存しました','ok');
+}
+ 
+// ---------- フィルター・ソート ----------
+function filterType(type,el) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderStores();
+}
+function sortStores() { renderStores(); }
+ 
+// ---------- モーダル ----------
+function openModal(id) {
+  if (id==='mystore') {
+    document.getElementById('my-name').value = myStore.name!=='（新規オープン予定）'?myStore.name:'';
+    document.getElementById('my-p60').value = myStore.price60||'';
+    document.getElementById('my-p60new').value = myStore.price60new||'';
+    document.getElementById('my-shimei').value = myStore.shimei||'';
+    document.getElementById('my-special').value = myStore.specialShimei||'';
+  }
+  if (id==='add') {
+    const saved = loadApiKey();
+    if (saved) document.getElementById('input-apikey').value = saved;
+  }
+  document.getElementById('modal-'+id).classList.add('open');
+}
+function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+function closeModalIfBg(e,id) { if (e.target===document.getElementById('modal-'+id)) closeModal(id); }
+function switchMTab(tab,el) {
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mtab-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mtab-'+tab).classList.add('active');
+}
+ 
+// ---------- トースト ----------
+function showToast(msg,type) {
+  const t = document.createElement('div');
+  t.className=`toast toast-${type}`;
+  t.textContent=msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),300); },2800);
+}
+ 
+// ---------- 初期化 ----------
+function renderAll() {
+  renderKPI();
+  renderStores();
+  renderCompareTable();
+  setTimeout(renderChart, 100);
+}
+document.addEventListener('DOMContentLoaded', renderAll);

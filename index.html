@@ -59,21 +59,16 @@
 
   <div class="store-grid" id="store-grid"></div>
 
-  <!-- チャートセクション -->
   <section class="chart-section">
     <h2 class="section-title">競合分析チャート <span>スコア比較・価格比較</span></h2>
     <div class="chart-grid">
       <div class="chart-card">
         <div class="chart-label">AIスコア レーダーチャート</div>
-        <div style="position:relative;height:280px">
-          <canvas id="chart-canvas"></canvas>
-        </div>
+        <div style="position:relative;height:280px"><canvas id="chart-canvas"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-label">価格比較（60分）</div>
-        <div style="position:relative;height:280px">
-          <canvas id="bar-canvas"></canvas>
-        </div>
+        <div style="position:relative;height:280px"><canvas id="bar-canvas"></canvas></div>
       </div>
     </div>
   </section>
@@ -95,13 +90,36 @@
       <button class="modal-close" onclick="closeModal('add')">✕</button>
     </div>
     <div class="modal-tabs">
-      <button class="mtab active" onclick="switchMTab('url',this)">URLから自動解析</button>
+      <button class="mtab active" onclick="switchMTab('pdf',this)">PDFから解析</button>
+      <button class="mtab" onclick="switchMTab('url',this)">URLから解析</button>
       <button class="mtab" onclick="switchMTab('manual',this)">手動入力</button>
     </div>
 
-    <div id="mtab-url" class="mtab-content active">
+    <!-- PDFタブ（デフォルト） -->
+    <div id="mtab-pdf" class="mtab-content active">
       <div class="form-group">
-        <label>Anthropic APIキー（初回のみ入力・以降は自動保存）</label>
+        <label>Anthropic APIキー（初回のみ・以降自動保存）</label>
+        <input type="password" id="pdf-apikey" placeholder="sk-ant-api03-..." />
+      </div>
+      <div class="ai-note">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 6.5v3.5M7 4.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        シティヘブンのページを Ctrl+P → PDFで保存 してドロップするだけ！
+      </div>
+      <div id="drop-zone" class="drop-zone" onclick="document.getElementById('pdf-input').click()">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 4v16M8 12l8-8 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 24v2a2 2 0 002 2h20a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="drop-text">PDFをここにドロップ</div>
+        <div class="drop-sub">またはクリックして選択</div>
+        <div id="pdf-filename" class="pdf-filename"></div>
+      </div>
+      <input type="file" id="pdf-input" accept=".pdf" style="display:none" />
+      <button class="btn-primary" onclick="handlePDFUpload()">AIで解析・登録</button>
+      <div id="pdf-status" class="analyze-status"></div>
+    </div>
+
+    <!-- URLタブ -->
+    <div id="mtab-url" class="mtab-content">
+      <div class="form-group">
+        <label>Anthropic APIキー（初回のみ・以降自動保存）</label>
         <input type="password" id="input-apikey" placeholder="sk-ant-api03-..." />
       </div>
       <div class="form-group">
@@ -110,12 +128,13 @@
       </div>
       <div class="ai-note">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 6.5v3.5M7 4.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        URLを貼るとClaudeが店舗名・価格・在籍数・AIスコアを自動抽出します（10〜20秒）
+        ※スクレイピング制限によりPDF方式の方が精度が高いです
       </div>
       <button class="btn-primary" onclick="analyzeURL()">AIで解析・登録</button>
       <div id="analyze-status" class="analyze-status"></div>
     </div>
 
+    <!-- 手動入力タブ -->
     <div id="mtab-manual" class="mtab-content">
       <div class="form-grid-2">
         <div class="form-group"><label>店舗名 *</label><input type="text" id="m-name" placeholder="神戸○○ヘルス" /></div>
@@ -176,5 +195,6 @@
 </div>
 
 <script src="app.js"></script>
+<script src="pdf-analyzer.js"></script>
 </body>
 </html>

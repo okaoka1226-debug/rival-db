@@ -266,36 +266,49 @@ async function analyzeURL() {
  
   saveApiKey(apiKey);
   status.className='analyze-status';
-  status.textContent='AIが解析中... (10〜20秒かかります)';
+  status.textContent='サーバー経由でページ取得中... (20〜40秒かかります)';
  
-  const prompt = `以下の風俗店ページのURLを見て、店舗情報を抽出してください。
-URLにアクセスできない場合はURLから読み取れる情報だけで回答してください。
+  try {
+    const res = await fetch('https://rival-scraper.onrender.com/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, api_key: apiKey })
+    });
  
-URL: ${url}
+    if (!res.ok) throw new Error('サーバーエラー: ' + res.statusText);
  
-以下のJSON形式のみで回答してください（説明文不要）:
-{
-  "name": "店舗名",
-  "type": "deli または hotel または hybrid",
-  "tel": "電話番号",
-  "castCount": 在籍人数(数値またはnull),
-  "price60": 60分通常価格(数値またはnull),
-  "price60new": 60分新規最安値(数値またはnull),
-  "price90": 90分価格(数値またはnull),
-  "price120": 120分価格(数値またはnull),
-  "shimei": 指名料(数値またはnull),
-  "specialShimei": 特別指名料(数値またはnull),
-  "entryFee": 入会金(数値またはnull),
-  "totalReviews": 口コミ総数(数値またはnull),
-  "scores": {
-    "hp": HPの作り込み・情報設計スコア(0-100),
-    "profile": プロフ画像クオリティスコア(0-100),
-    "reviews": 口コミ数・信頼度スコア(0-100),
-    "price": 価格競争力スコア(0-100),
-    "cast": 在籍数・多様性スコア(0-100)
-  },
-  "aiTags": [{"text":"タグ名","type":"good または warn または bad"}],
-  "aiSummary": "200文字以内のAI総評"
+    const parsed = await res.json();
+    if (parsed.error) throw new Error(parsed.error);
+ 
+    const newStore = {
+      id: uid(), url,
+      name: parsed.name || '（店舗名不明）',
+      type: parsed.type || 'deli',
+      tel: parsed.tel || '—',
+      castCount: parsed.castCount || null,
+      price60: parsed.price60 || null,
+      price60new: parsed.price60new || null,
+      price90: parsed.price90 || null,
+      price120: parsed.price120 || null,
+      shimei: parsed.shimei || null,
+      specialShimei: parsed.specialShimei || null,
+      entryFee: parsed.entryFee || null,
+      totalReviews: parsed.totalReviews || null,
+      scores: parsed.scores || null,
+      aiTags: parsed.aiTags || [],
+      aiSummary: parsed.aiSummary || '',
+    };
+ 
+    stores.push(newStore);
+    saveStores(stores);
+    closeModal('add');
+    renderAll();
+    showToast(`「${newStore.name}」を登録しました`, 'ok');
+ 
+  } catch(e) {
+    status.textContent = 'エラー: ' + e.message;
+    status.className = 'analyze-status err';
+  }
 }`;
  
   try {

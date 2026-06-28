@@ -19,10 +19,8 @@
       <span class="brand-area">三宮エリア</span>
     </div>
     <div class="nav-actions">
-      <button class="btn-ghost" onclick="openModal('add')">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        店舗追加
-      </button>
+      <button class="btn-ghost" onclick="openModal('add')">+ 店舗追加</button>
+      <button class="btn-ghost" id="reeval-btn" onclick="reEvaluateAll()">全店一括再評価</button>
       <button class="btn-ghost" onclick="openModal('mystore')">自店設定</button>
     </div>
   </div>
@@ -33,7 +31,7 @@
   <header class="page-header">
     <div class="header-left">
       <h1>三宮エリア<br><span>競合インテリジェンス</span></h1>
-      <p class="header-sub">デリヘル・ホテヘル・ハイブリッド店舗の価格・スタッフ・HP品質を横断比較</p>
+      <p class="header-sub">デリヘル・ホテヘル・エステ店舗の価格・スタッフ・HP品質を横断比較</p>
     </div>
     <div class="kpi-row" id="kpi-row"></div>
   </header>
@@ -43,7 +41,7 @@
       <button class="filter-btn active" onclick="filterType('all',this)">すべて</button>
       <button class="filter-btn" onclick="filterType('deli',this)">デリヘル</button>
       <button class="filter-btn" onclick="filterType('hotel',this)">ホテヘル</button>
-      <button class="filter-btn" onclick="filterType('hybrid',this)">ハイブリッド</button>
+      <button class="filter-btn" onclick="filterType('este',this)">エステ</button>
     </div>
     <div class="sort-group">
       <label class="sort-label">並び替え</label>
@@ -67,7 +65,7 @@
         <div style="position:relative;height:280px"><canvas id="chart-canvas"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-label">価格比較（60分）</div>
+        <div class="chart-label">価格比較（クーポン最安値 vs 最小コース）</div>
         <div style="position:relative;height:280px"><canvas id="bar-canvas"></canvas></div>
       </div>
     </div>
@@ -95,20 +93,19 @@
       <button class="mtab" onclick="switchMTab('manual',this)">手動入力</button>
     </div>
 
-    <!-- PDFタブ（デフォルト） -->
+    <!-- PDFタブ -->
     <div id="mtab-pdf" class="mtab-content active">
       <div class="form-group">
         <label>Anthropic APIキー（初回のみ・以降自動保存）</label>
         <input type="password" id="pdf-apikey" placeholder="sk-ant-api03-..." />
       </div>
       <div class="ai-note">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 6.5v3.5M7 4.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        シティヘブンのページを Ctrl+P → PDFで保存 してドロップするだけ！
+        シティヘブンのページを Ctrl+P → PDFで保存 してドロップ！複数枚OK
       </div>
       <div id="drop-zone" class="drop-zone" onclick="document.getElementById('pdf-input').click()">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 4v16M8 12l8-8 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 24v2a2 2 0 002 2h20a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <div class="drop-text">PDFをここにドロップ</div>
-        <div class="drop-sub">またはクリックして選択</div>
+        <div class="drop-sub">またはクリックして選択（複数可）</div>
         <div id="pdf-filename" class="pdf-filename"></div>
       </div>
       <input type="file" id="pdf-input" accept=".pdf" multiple style="display:none" />
@@ -119,17 +116,14 @@
     <!-- URLタブ -->
     <div id="mtab-url" class="mtab-content">
       <div class="form-group">
-        <label>Anthropic APIキー（初回のみ・以降自動保存）</label>
+        <label>Anthropic APIキー</label>
         <input type="password" id="input-apikey" placeholder="sk-ant-api03-..." />
       </div>
       <div class="form-group">
-        <label>シティヘブン or 公式サイト URL</label>
+        <label>シティヘブン URL</label>
         <input type="text" id="input-url" placeholder="https://www.cityheaven.net/hyogo/..." />
       </div>
-      <div class="ai-note">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 6.5v3.5M7 4.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        ※スクレイピング制限によりPDF方式の方が精度が高いです
-      </div>
+      <div class="ai-note">※PDFの方が精度が高いです</div>
       <button class="btn-primary" onclick="analyzeURL()">AIで解析・登録</button>
       <div id="analyze-status" class="analyze-status"></div>
     </div>
@@ -138,7 +132,13 @@
     <div id="mtab-manual" class="mtab-content">
       <div class="form-grid-2">
         <div class="form-group"><label>店舗名 *</label><input type="text" id="m-name" placeholder="神戸○○ヘルス" /></div>
-        <div class="form-group"><label>業態 *</label><select id="m-type"><option value="deli">デリヘル</option><option value="hotel">ホテヘル</option><option value="hybrid">ハイブリッド</option></select></div>
+        <div class="form-group"><label>業態 *</label>
+          <select id="m-type">
+            <option value="deli">デリヘル</option>
+            <option value="hotel">ホテヘル</option>
+            <option value="este">エステ</option>
+          </select>
+        </div>
       </div>
       <div class="form-grid-2">
         <div class="form-group"><label>電話番号</label><input type="text" id="m-tel" placeholder="078-xxx-xxxx" /></div>
@@ -146,13 +146,32 @@
       </div>
       <div class="form-section-label">価格設定</div>
       <div class="form-grid-2">
-        <div class="form-group"><label>60分 通常価格</label><input type="number" id="m-p60" placeholder="19800" /></div>
-        <div class="form-group"><label>60分 新規最安値</label><input type="number" id="m-p60new" placeholder="17600" /></div>
+        <div class="form-group"><label>最小コース価格（円）</label><input type="number" id="m-mincourse" placeholder="18700" /></div>
+        <div class="form-group"><label>最小コース分数</label>
+          <select id="m-mincoursemin">
+            <option value="60">60分</option>
+            <option value="70">70分</option>
+            <option value="80">80分</option>
+            <option value="90">90分</option>
+          </select>
+        </div>
       </div>
       <div class="form-grid-3">
-        <div class="form-group"><label>指名料</label><input type="number" id="m-shimei" placeholder="2200" /></div>
-        <div class="form-group"><label>特別指名料</label><input type="number" id="m-special" placeholder="1100" /></div>
-        <div class="form-group"><label>入会金</label><input type="number" id="m-entry" placeholder="1100" /></div>
+        <div class="form-group"><label>クーポン最安値（円）</label><input type="number" id="m-coupon" placeholder="17600" /></div>
+        <div class="form-group"><label>クーポン分数</label>
+          <select id="m-couponmin">
+            <option value="">—</option>
+            <option value="60">60分</option>
+            <option value="70">70分</option>
+            <option value="80">80分</option>
+            <option value="90">90分</option>
+          </select>
+        </div>
+        <div class="form-group"><label>クーポン名</label><input type="text" id="m-couponname" placeholder="業界最安値クーポン" /></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>指名料（円）</label><input type="number" id="m-shimei" placeholder="2200" /></div>
+        <div class="form-group"><label>入会金（円）</label><input type="number" id="m-entry" placeholder="1100" /></div>
       </div>
       <div class="form-grid-2">
         <div class="form-group"><label>URL</label><input type="text" id="m-url" placeholder="https://..." /></div>
@@ -171,14 +190,32 @@
       <button class="modal-close" onclick="closeModal('mystore')">✕</button>
     </div>
     <div class="form-group"><label>店舗名</label><input type="text" id="my-name" placeholder="（新店舗名）" /></div>
+    <div class="form-section-label">価格設定</div>
     <div class="form-grid-2">
-      <div class="form-group"><label>60分 予定価格</label><input type="number" id="my-p60" placeholder="18000" /></div>
-      <div class="form-group"><label>新規最安値</label><input type="number" id="my-p60new" placeholder="15000" /></div>
+      <div class="form-group"><label>最小コース価格（円）</label><input type="number" id="my-mincourse" placeholder="18000" /></div>
+      <div class="form-group"><label>最小コース分数</label>
+        <select id="my-mincoursemin">
+          <option value="60">60分</option>
+          <option value="70">70分</option>
+          <option value="80">80分</option>
+          <option value="90">90分</option>
+        </select>
+      </div>
     </div>
-    <div class="form-grid-2">
-      <div class="form-group"><label>指名料</label><input type="number" id="my-shimei" placeholder="2200" /></div>
-      <div class="form-group"><label>特別指名料</label><input type="number" id="my-special" placeholder="1100" /></div>
+    <div class="form-grid-3">
+      <div class="form-group"><label>クーポン最安値（円）</label><input type="number" id="my-coupon" placeholder="15000" /></div>
+      <div class="form-group"><label>クーポン分数</label>
+        <select id="my-couponmin">
+          <option value="">—</option>
+          <option value="60">60分</option>
+          <option value="70">70分</option>
+          <option value="80">80分</option>
+          <option value="90">90分</option>
+        </select>
+      </div>
+      <div class="form-group"><label>クーポン名</label><input type="text" id="my-couponname" placeholder="新規割引" /></div>
     </div>
+    <div class="form-group"><label>指名料（円）</label><input type="number" id="my-shimei" placeholder="2200" /></div>
     <button class="btn-primary" onclick="saveMyStore()">保存</button>
   </div>
 </div>
@@ -195,6 +232,5 @@
 </div>
 
 <script src="app.js"></script>
-<script src="pdf-analyzer.js"></script>
 </body>
 </html>

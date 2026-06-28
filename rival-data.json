@@ -1,0 +1,747 @@
+{
+  "stores": [
+    {
+      "id": "s001",
+      "name": "神戸デリヘル クリスタル",
+      "type": "deli",
+      "tel": "078-777-6435",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/kobe_crystal/",
+      "castCount": 116,
+      "price60": 19800,
+      "price70": null,
+      "price80": null,
+      "price90": 21100,
+      "price120": 32100,
+      "minCourse": 17800,
+      "minCourseMin": 70,
+      "couponPrice": 17600,
+      "couponMin": 70,
+      "couponName": "業界最安値クーポン",
+      "shimei": 2200,
+      "entryFee": 1100,
+      "totalReviews": 1339,
+      "scores": {
+        "hp": 85,
+        "profile": 82,
+        "reviews": 88,
+        "price": 72,
+        "cast": 95
+      },
+      "aiTags": [
+        {
+          "text": "在籍数トップクラス",
+          "type": "good"
+        },
+        {
+          "text": "口コミ豊富",
+          "type": "good"
+        },
+        {
+          "text": "価格やや高め",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "在籍116名・口コミ1339件と規模・実績ともに最上位クラス。価格はやや高めだが安定感があり、初めての利用でも安心して選べる老舗デリヘル。"
+    },
+    {
+      "id": "s17826097387022kz9",
+      "name": "よくばりトロリッ痴-フェチなM性感ヘルス-神戸店",
+      "type": "deli",
+      "tel": "070-5654-2105",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/yokubaritororitch_koube/",
+      "castCount": 26,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 17600,
+      "minCourseMin": 60,
+      "couponPrice": 15400,
+      "couponMin": 60,
+      "couponName": "口コミ割引やってます",
+      "shimei": 2200,
+      "entryFee": 1100,
+      "totalReviews": 286,
+      "scores": {
+        "hp": 70,
+        "profile": 68,
+        "reviews": 55,
+        "price": 78,
+        "cast": 38
+      },
+      "aiTags": [
+        {
+          "text": "クーポン割引大",
+          "type": "good"
+        },
+        {
+          "text": "ニッチ需要向け",
+          "type": "good"
+        },
+        {
+          "text": "在籍少なめ",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "クーポン適用で15400円と価格競争力あり。フェチ・M性感特化で差別化された専門店。在籍数26名と少なく選択肢は限られるが、コアなファンに支持される。"
+    },
+    {
+      "id": "s1782610140402ggvw",
+      "name": "ごほうびSPA神戸店",
+      "type": "este",
+      "tel": "078-272-5888",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/gohoubispakobeten/",
+      "castCount": 36,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 18700,
+      "minCourseMin": 60,
+      "couponPrice": 16500,
+      "couponMin": 60,
+      "couponName": "口コミ割",
+      "shimei": 2200,
+      "entryFee": 1100,
+      "totalReviews": 878,
+      "scores": {
+        "hp": 80,
+        "profile": 78,
+        "reviews": 75,
+        "price": 68,
+        "cast": 48
+      },
+      "aiTags": [
+        {
+          "text": "エステ系人気店",
+          "type": "good"
+        },
+        {
+          "text": "口コミ安定",
+          "type": "good"
+        },
+        {
+          "text": "価格やや高め",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "口コミ878件と信頼性が高いエステ系店舗。クーポン利用で16500円と価格はやや高め。ブランド力があり安心感は十分。在籍36名と中規模ながら品質重視の運営が伺える。"
+    },
+    {
+      "id": "s1782610524960df0x",
+      "name": "神戸泡洗体ハイブリッドエステ",
+      "type": "este",
+      "tel": "078-252-7255",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/kobe_hybrid/",
+      "castCount": 49,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 22000,
+      "minCourseMin": 70,
+      "couponPrice": 26000,
+      "couponMin": 90,
+      "couponName": "ご来店感謝イベント実施中",
+      "shimei": 2200,
+      "entryFee": 1100,
+      "totalReviews": 517,
+      "scores": {
+        "hp": 72,
+        "profile": 74,
+        "reviews": 62,
+        "price": 42,
+        "cast": 58
+      },
+      "aiTags": [
+        {
+          "text": "泡洗体特化",
+          "type": "good"
+        },
+        {
+          "text": "価格が高い",
+          "type": "bad"
+        },
+        {
+          "text": "クーポン逆効果",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "泡洗体特化でサービス内容はユニーク。ただし最小コース22000円・クーポン最安26000円と価格が最高水準で割高感が強い。口コミ517件とそれなりの実績はある。"
+    },
+    {
+      "id": "s1782610754923pvwg",
+      "name": "神戸高級出張メンズエステ ChouChou age20.30.40's（シュシュ）",
+      "type": "este",
+      "tel": "0120-539-551",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/chochou_kobe/",
+      "castCount": 108,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 14000,
+      "minCourseMin": 60,
+      "couponPrice": 10000,
+      "couponMin": 60,
+      "couponName": "プラチナメール限定クーポン",
+      "shimei": 2000,
+      "entryFee": null,
+      "totalReviews": 1373,
+      "scores": {
+        "hp": 90,
+        "profile": 88,
+        "reviews": 90,
+        "price": 95,
+        "cast": 92
+      },
+      "aiTags": [
+        {
+          "text": "コスパ最強",
+          "type": "good"
+        },
+        {
+          "text": "口コミ最多級",
+          "type": "good"
+        },
+        {
+          "text": "在籍充実",
+          "type": "good"
+        }
+      ],
+      "aiSummary": "クーポン10000円/60分と価格最安水準で、口コミ1373件・在籍108名と規模も充実。コスパ・実績・選択肢の三拍子が揃った三宮エリアトップクラスの高評価店舗。"
+    },
+    {
+      "id": "s17826114909832kuy",
+      "name": "ギャルズネットワーク神戸",
+      "type": "deli",
+      "tel": "078-392-2066",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/galsnet_kobe/",
+      "castCount": 127,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 20900,
+      "minCourseMin": 60,
+      "couponPrice": 15400,
+      "couponMin": 60,
+      "couponName": "ネット予約限定コース",
+      "shimei": 2200,
+      "entryFee": null,
+      "totalReviews": 540,
+      "scores": {
+        "hp": 82,
+        "profile": 80,
+        "reviews": 63,
+        "price": 75,
+        "cast": 98
+      },
+      "aiTags": [
+        {
+          "text": "在籍数最大級",
+          "type": "good"
+        },
+        {
+          "text": "クーポン割安",
+          "type": "good"
+        },
+        {
+          "text": "正規料金高め",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "在籍127名はリスト最大。クーポン利用で15400円と実質価格は競争力あり。口コミ540件と信頼性も十分。正規料金20900円は高いためクーポン活用が前提となる。"
+    },
+    {
+      "id": "s1782611642385i3t9",
+      "name": "Canx2神戸店",
+      "type": "deli",
+      "tel": "078-335-2338",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/cancan_kobe/",
+      "castCount": 49,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 15000,
+      "minCourseMin": 60,
+      "couponPrice": 13000,
+      "couponMin": 60,
+      "couponName": "新規割",
+      "shimei": 1000,
+      "entryFee": null,
+      "totalReviews": 569,
+      "scores": {
+        "hp": 74,
+        "profile": 72,
+        "reviews": 64,
+        "price": 85,
+        "cast": 58
+      },
+      "aiTags": [
+        {
+          "text": "指名料最安級",
+          "type": "good"
+        },
+        {
+          "text": "価格リーズナブル",
+          "type": "good"
+        },
+        {
+          "text": "在籍やや少なめ",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "指名料1000円と最安水準で、クーポン13000円/60分も割安。口コミ569件と実績も安定。在籍49名と中規模だが、コストを抑えたい初回ユーザーに向いた店舗。"
+    },
+    {
+      "id": "s1782611935124qe50",
+      "name": "神戸回春性感マッサージ倶楽部",
+      "type": "este",
+      "tel": "078-261-1402",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/kaishun_kobe/",
+      "castCount": 31,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 15400,
+      "minCourseMin": 60,
+      "couponPrice": 13200,
+      "couponMin": 60,
+      "couponName": "口コミクーポン",
+      "shimei": 2200,
+      "entryFee": 1000,
+      "totalReviews": 1220,
+      "scores": {
+        "hp": 78,
+        "profile": 76,
+        "reviews": 86,
+        "price": 83,
+        "cast": 42
+      },
+      "aiTags": [
+        {
+          "text": "口コミ優秀",
+          "type": "good"
+        },
+        {
+          "text": "価格リーズナブル",
+          "type": "good"
+        },
+        {
+          "text": "在籍少なめ",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "口コミ1220件と非常に高い信頼実績を誇るエステ店。クーポン13200円/60分と価格競争力もあり。在籍31名とやや少ないが、リピーター率が高い安定した人気店。"
+    },
+    {
+      "id": "s1782612108054filz",
+      "name": "神戸痴女性感フェチ倶楽部",
+      "type": "deli",
+      "tel": "078-241-5121",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/kobe_chijyo/",
+      "castCount": 23,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 17600,
+      "minCourseMin": 60,
+      "couponPrice": 24200,
+      "couponMin": 90,
+      "couponName": "口コミクーポン",
+      "shimei": 2200,
+      "entryFee": 1100,
+      "totalReviews": 232,
+      "scores": {
+        "hp": 65,
+        "profile": 64,
+        "reviews": 50,
+        "price": 55,
+        "cast": 32
+      },
+      "aiTags": [
+        {
+          "text": "特殊プレイ特化",
+          "type": "good"
+        },
+        {
+          "text": "クーポン割高",
+          "type": "bad"
+        },
+        {
+          "text": "在籍少ない",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "痴女・フェチ特化の専門デリヘル。クーポン最安が24200円/90分と割高で価格競争力が低い。口コミ232件・在籍23名と規模も小さく、特定ニーズ向けの選択肢となる。"
+    },
+    {
+      "id": "s1782612246750fffk",
+      "name": "CLUB ONE 神戸店",
+      "type": "deli",
+      "tel": "078-230-0888",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/club_one_kobe/",
+      "castCount": 29,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 17000,
+      "minCourseMin": 60,
+      "couponPrice": 15400,
+      "couponMin": 90,
+      "couponName": "口コミクーポン",
+      "shimei": 3000,
+      "entryFee": 1100,
+      "totalReviews": 27,
+      "scores": {
+        "hp": 55,
+        "profile": 58,
+        "reviews": 27,
+        "price": 60,
+        "cast": 40
+      },
+      "aiTags": [
+        {
+          "text": "口コミ極少",
+          "type": "bad"
+        },
+        {
+          "text": "指名料高い",
+          "type": "warn"
+        },
+        {
+          "text": "実績不透明",
+          "type": "bad"
+        }
+      ],
+      "aiSummary": "口コミ27件と実績が著しく少なく信頼性の判断が難しい。指名料3000円と高めで価格競争力も低い。在籍29名と小規模。新規または情報不足の店舗で利用にはリスクを伴う。"
+    },
+    {
+      "id": "s1782612615688o0k7",
+      "name": "エステNADIA神戸店",
+      "type": "este",
+      "tel": "078-272-3375",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/aroma-nadia/",
+      "castCount": 88,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 11000,
+      "minCourseMin": 60,
+      "couponPrice": 9900,
+      "couponMin": 60,
+      "couponName": "60分・おまかせ割",
+      "shimei": 1100,
+      "entryFee": 1100,
+      "totalReviews": 2103,
+      "scores": {
+        "hp": 95,
+        "profile": 92,
+        "reviews": 98,
+        "price": 98,
+        "cast": 88
+      },
+      "aiTags": [
+        {
+          "text": "口コミ断トツ1位",
+          "type": "good"
+        },
+        {
+          "text": "最安値水準",
+          "type": "good"
+        },
+        {
+          "text": "指名料格安",
+          "type": "good"
+        }
+      ],
+      "aiSummary": "口コミ2103件はリスト内断トツ1位。クーポン9900円・指名料1100円と最安水準の価格設定で在籍88名も充実。総合力で三宮エリア最高評価に値するエステ系人気店。"
+    },
+    {
+      "id": "s1782612923469e6ev",
+      "name": "神戸FOXY",
+      "type": "deli",
+      "tel": "078-882-8467",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/foxy/",
+      "castCount": 61,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 16000,
+      "minCourseMin": 60,
+      "couponPrice": 16500,
+      "couponMin": 60,
+      "couponName": "60分",
+      "shimei": 2000,
+      "entryFee": null,
+      "totalReviews": 208,
+      "scores": {
+        "hp": 70,
+        "profile": 72,
+        "reviews": 48,
+        "price": 73,
+        "cast": 65
+      },
+      "aiTags": [
+        {
+          "text": "中規模安定",
+          "type": "good"
+        },
+        {
+          "text": "口コミ少なめ",
+          "type": "warn"
+        },
+        {
+          "text": "クーポン割高",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "在籍61名と中規模でバランス型のデリヘル。クーポン最安が16500円と正規より高く割引なしが気になる。口コミ208件とやや少なめで実績評価に課題が残る。"
+    },
+    {
+      "id": "s1782613142919kuap",
+      "name": "神戸BOOKMARK20.30's",
+      "type": "deli",
+      "tel": "0120-311-334",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/kobe_bkmk/",
+      "castCount": 113,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 19000,
+      "minCourseMin": 60,
+      "couponPrice": 10000,
+      "couponMin": 60,
+      "couponName": "60分・ネット予約限定",
+      "shimei": 2000,
+      "entryFee": null,
+      "totalReviews": 278,
+      "scores": {
+        "hp": 80,
+        "profile": 82,
+        "reviews": 54,
+        "price": 88,
+        "cast": 93
+      },
+      "aiTags": [
+        {
+          "text": "クーポン最安級",
+          "type": "good"
+        },
+        {
+          "text": "在籍充実",
+          "type": "good"
+        },
+        {
+          "text": "口コミ少なめ",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "クーポン10000円/60分と最安水準で在籍113名も充実。ただし口コミ278件と規模の割に少なく実績が追いついていない。価格と在籍数の魅力は大きく今後の口コミ蓄積に期待。"
+    },
+    {
+      "id": "s1782613326121ojfc",
+      "name": "10代20代専門！全オプション無料！姫コレクション神戸店",
+      "type": "deli",
+      "tel": "070-5632-1919",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/harenchi_kobe/",
+      "castCount": 35,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 10500,
+      "minCourseMin": 60,
+      "couponPrice": 9500,
+      "couponMin": 70,
+      "couponName": "70分",
+      "shimei": 3000,
+      "entryFee": null,
+      "totalReviews": 4,
+      "scores": {
+        "hp": 40,
+        "profile": 45,
+        "reviews": 22,
+        "price": 92,
+        "cast": 46
+      },
+      "aiTags": [
+        {
+          "text": "価格最安水準",
+          "type": "good"
+        },
+        {
+          "text": "口コミほぼなし",
+          "type": "bad"
+        },
+        {
+          "text": "指名料高い",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "クーポン9500円/70分と最安水準の価格設定は魅力的だが、口コミ4件と実績がほぼ皆無で信頼性が大きく欠ける。指名料3000円と高め。新規店舗と思われリスクを考慮が必要。"
+    },
+    {
+      "id": "s17826135385387ss1",
+      "name": "やんちゃな子猫神戸三宮店",
+      "type": "deli",
+      "tel": "078-332-9787",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/yanneko_sannomiya/",
+      "castCount": 99,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 15000,
+      "minCourseMin": 60,
+      "couponPrice": 14000,
+      "couponMin": 60,
+      "couponName": "新規割",
+      "shimei": 2200,
+      "entryFee": 1100,
+      "totalReviews": 1058,
+      "scores": {
+        "hp": 83,
+        "profile": 84,
+        "reviews": 80,
+        "price": 80,
+        "cast": 87
+      },
+      "aiTags": [
+        {
+          "text": "知名度高い",
+          "type": "good"
+        },
+        {
+          "text": "口コミ豊富",
+          "type": "good"
+        },
+        {
+          "text": "コスパ良好",
+          "type": "good"
+        }
+      ],
+      "aiSummary": "口コミ1058件・在籍99名と大手チェーン系の安定感が光る。クーポン14000円/60分と価格も良好でバランスが取れている。知名度・実績・規模の三拍子で安心して利用できる人気店。"
+    },
+    {
+      "id": "s1782613748201dfbk",
+      "name": "club lucina（クラブルキナ）",
+      "type": "deli",
+      "tel": "078-241-2583",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/club_lucina/",
+      "castCount": 100,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 19000,
+      "minCourseMin": 60,
+      "couponPrice": 16000,
+      "couponMin": 60,
+      "couponName": "新規割",
+      "shimei": 2000,
+      "entryFee": null,
+      "totalReviews": 73,
+      "scores": {
+        "hp": 68,
+        "profile": 70,
+        "reviews": 32,
+        "price": 65,
+        "cast": 88
+      },
+      "aiTags": [
+        {
+          "text": "在籍100名超",
+          "type": "good"
+        },
+        {
+          "text": "口コミ極少",
+          "type": "bad"
+        },
+        {
+          "text": "価格やや高め",
+          "type": "warn"
+        }
+      ],
+      "aiSummary": "在籍100名と充実しているが口コミ73件と規模の割に実績が少なく信頼性に疑問が残る。クーポン16000円/60分と価格もやや高め。ポテンシャルはあるが情報不足な段階。"
+    },
+    {
+      "id": "s1782613978747xw3l",
+      "name": "ときめき♡私立 学園天国",
+      "type": "deli",
+      "tel": "078-414-7719",
+      "url": "https://www.cityheaven.net/hyogo/A2802/A280201/club_lucina/",
+      "castCount": 17,
+      "price60": null,
+      "price70": null,
+      "price80": null,
+      "price90": null,
+      "price120": null,
+      "minCourse": 23000,
+      "minCourseMin": 90,
+      "couponPrice": 15000,
+      "couponMin": 70,
+      "couponName": "",
+      "shimei": null,
+      "entryFee": null,
+      "totalReviews": 8,
+      "scores": {
+        "hp": 35,
+        "profile": 40,
+        "reviews": 20,
+        "price": 62,
+        "cast": 28
+      },
+      "aiTags": [
+        {
+          "text": "口コミ最低水準",
+          "type": "bad"
+        },
+        {
+          "text": "価格高め",
+          "type": "warn"
+        },
+        {
+          "text": "情報不足",
+          "type": "bad"
+        }
+      ],
+      "aiSummary": "口コミ8件・在籍17名・指名料不明とあらゆる情報が不足しており評価が最も困難な店舗。最小コース23000円と割高で参入障壁も高い。実績がほぼなく初回利用には慎重な判断が必要。"
+    }
+  ],
+  "myStore": {
+    "name": "（自店 新規オープン予定）",
+    "type": "hybrid",
+    "minCourse": null,
+    "minCourseMin": 60,
+    "couponPrice": null,
+    "couponMin": null,
+    "couponName": "",
+    "shimei": null
+  },
+  "exportedAt": "2026-06-28T04:08:31.681Z",
+  "version": 3
+}

@@ -612,3 +612,54 @@ function showToast(msg,type) {
 
 function renderAll() { renderKPI(); renderStores(); renderCompareTable(); setTimeout(renderChart,100); }
 document.addEventListener('DOMContentLoaded', function(){ initDropZone(); renderAll(); });
+
+// ---------- GitHubエクスポート ----------
+function exportToGitHub() {
+  var data = {
+    stores: stores,
+    myStore: myStore,
+    exportedAt: new Date().toISOString(),
+    version: 3
+  };
+  var json = JSON.stringify(data, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'rival-data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('rival-data.json をダウンロードしました！GitHubにアップしてください', 'ok');
+}
+
+// ---------- GitHubからデータ読み込み ----------
+async function loadFromGitHub() {
+  try {
+    // キャッシュを無効化するためにタイムスタンプを付与
+    var res = await fetch('rival-data.json?t=' + Date.now());
+    if (!res.ok) throw new Error('データファイルが見つかりません');
+    var data = await res.json();
+    if (data.stores) {
+      stores = data.stores;
+      saveStores(stores);
+    }
+    if (data.myStore) {
+      myStore = data.myStore;
+      saveMySt(myStore);
+    }
+    renderAll();
+    showToast('最新データを読み込みました（' + stores.length + '店舗）', 'ok');
+  } catch(e) {
+    // ファイルがない場合はLocalStorageのデータをそのまま使う
+    console.log('rival-data.json not found, using localStorage');
+  }
+}
+
+// 起動時にGitHubからデータ読み込みを試みる
+document.addEventListener('DOMContentLoaded', function() {
+  initDropZone();
+  // まずGitHubからデータ読み込みを試みる
+  loadFromGitHub().then(function() {
+    renderAll();
+  });
+});
